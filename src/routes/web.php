@@ -19,6 +19,29 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Auth::routes();
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', function() {
+        return view('chat');
+    });
+    
+    Route::get('/getUserLogin', function() {
+        return Auth::user();
+    });
+    
+    Route::get('/messages', function() {
+        return App\Models\Message::with('user')->get();
+    });
+    
+    Route::post('/messages', function() {
+       $user = Auth::user();
+    
+      $message = new App\Models\Message();
+      $message->message = request()->get('message', '');
+      $message->user_id = $user->id;
+      $message->save();
+    
+      return ['message' => $message->load('user')];
+    });
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

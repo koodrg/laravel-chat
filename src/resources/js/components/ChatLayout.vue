@@ -1,17 +1,33 @@
 <template>
-	<div>
+    <div>
         <div class="chat">
             <div class="chat-title">
                 <h1>Chatroom</h1>
             </div>
             <div class="messages">
                 <div class="messages-content">
-                    <ChatItem v-for="n in 30" :key="n">123123123</ChatItem>
+                    <ChatItem
+                        v-for="(message, index) in list_messages"
+                        :key="index"
+                        :message="message"
+                    ></ChatItem>
                 </div>
             </div>
             <div class="message-box">
-                <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
-                <button type="submit" class="message-submit">Send</button>
+                <input
+                    type="text"
+                    v-model="message"
+                    @keyup.enter="sendMessage"
+                    class="message-input"
+                    placeholder="Type message..."
+                />
+                <button
+                    type="button"
+                    class="message-submit"
+                    @click="sendMessage"
+                >
+                    Send
+                </button>
             </div>
         </div>
         <div class="bg"></div>
@@ -19,12 +35,42 @@
 </template>
 
 <script>
-    import ChatItem from './ChatItem.vue'
-    export default {
-        components: {
-            ChatItem
-        }
-    }
+import ChatItem from "./ChatItem.vue";
+export default {
+    components: {
+        ChatItem,
+    },
+    data() {
+        return {
+            message: "",
+            list_messages: [],
+        };
+    },
+    created() {
+        this.loadMessage();
+    },
+    methods: {
+        async loadMessage() {
+            try {
+                const response = await axios.get("/messages");
+                this.list_messages = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async sendMessage() {
+            try {
+                const response = await axios.post("/messages", {
+                    message: this.message,
+                });
+                this.list_messages.push(response.data.message);
+                this.message = "";
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -37,15 +83,16 @@
 Body
 --------------------*/
 .bg {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	background: url('https://images.unsplash.com/photo-1451186859696-371d9477be93?crop=entropy&fit=crop&fm=jpg&h=975&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1925') no-repeat 0 0;
-	filter: blur(80px);
-	transform: scale(1.2);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: url("https://images.unsplash.com/photo-1451186859696-371d9477be93?crop=entropy&fit=crop&fm=jpg&h=975&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1925")
+        no-repeat 0 0;
+    filter: blur(80px);
+    transform: scale(1.2);
 }
 /*--------------------
 Chat
@@ -54,14 +101,14 @@ Chat
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);  
+    transform: translate(-50%, -50%);
     width: 500px;
     height: 80vh;
     max-height: 700px;
     z-index: 2;
     overflow: hidden;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, .2);
-    background: rgba(0, 0, 0, .5);
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
@@ -79,19 +126,20 @@ Chat Title
     text-transform: uppercase;
     text-align: left;
     padding: 10px 10px 10px 50px;
-  
-    h1, h2 {
+
+    h1,
+    h2 {
         font-weight: normal;
         font-size: 16px;
         margin: 0;
         padding: 0;
     }
     h2 {
-        color: rgba(255, 255, 255, .5);
+        color: rgba(255, 255, 255, 0.5);
         font-size: 8px;
         letter-spacing: 1px;
     }
-  
+
     .avatar {
         position: absolute;
         z-index: 1;
@@ -119,23 +167,23 @@ Message Box
     background: rgba(0, 0, 0, 0.3);
     padding: 10px;
     position: relative;
-  
+
     & .message-input {
         background: none;
         border: none;
-        outline: none!important;
+        outline: none !important;
         resize: none;
-        color: rgba(255, 255, 255, .7);
+        color: rgba(255, 255, 255, 0.7);
         font-size: 11px;
         height: 17px;
         margin: 0;
         padding-right: 20px;
         width: 265px;
     }
-    textarea:focus:-webkit-placeholder{
+    textarea:focus:-webkit-placeholder {
         color: transparent;
     }
-  
+
     & .message-submit {
         position: absolute;
         z-index: 1;
@@ -143,16 +191,16 @@ Message Box
         right: 10px;
         color: #fff;
         border: none;
-        background: #248A52;
+        background: #248a52;
         font-size: 10px;
         text-transform: uppercase;
         line-height: 1;
-        padding: 6px 10px; 
+        padding: 6px 10px;
         border-radius: 10px;
-        outline: none!important;
-        transition: background .2s ease;
+        outline: none !important;
+        transition: background 0.2s ease;
         &:hover {
-            background: #1D7745;
+            background: #1d7745;
         }
     }
 }
