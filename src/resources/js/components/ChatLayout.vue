@@ -47,7 +47,14 @@ export default {
         };
     },
     created() {
-        this.loadMessage();
+        this.loadMessage()
+        Echo.channel('tomogo_database_chatroom')
+        .listen('MessagePosted', (data) => {
+            console.log('someone post message');
+            let message = data.message
+            message.user = data.user
+            this.list_messages.push(message)
+        })
     },
     methods: {
         async loadMessage() {

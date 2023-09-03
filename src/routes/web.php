@@ -39,7 +39,9 @@ Route::middleware('auth')->group(function () {
       $message->message = request()->get('message', '');
       $message->user_id = $user->id;
       $message->save();
-    
+
+      broadcast(new App\Events\MessagePosted($message, $user))->toOthers();
+      
       return ['message' => $message->load('user')];
     });
 });

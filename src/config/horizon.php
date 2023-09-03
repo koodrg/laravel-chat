@@ -181,7 +181,7 @@ return [
 
     'defaults' => [
         'supervisor-1' => [
-            'connection' => 'redis',
+            'connection' => 'default',
             'queue' => ['default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
@@ -206,7 +206,11 @@ return [
 
         'local' => [
             'supervisor-1' => [
-                'maxProcesses' => 3,
+                'connection' => 'default', // This refers to the Redis connection name in database.php
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'processes' => 10,
+                'tries' => 3,
             ],
         ],
     ],
