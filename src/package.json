@@ -16,6 +16,9 @@
         "vue": "^3.3.4"
     },
     "dependencies": {
-        "laravel-echo": "^1.15.3"
+        "@soketi/soketi": "^1.6.0",
+        "laravel-echo": "^1.15.3",
+        "pusher-js": "^8.3.0",
+        "uuid": "^9.0.1"
     }
 }

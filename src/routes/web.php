@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,25 +24,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat', function() {
         return view('chat');
     });
-    
+
     Route::get('/getUserLogin', function() {
         return Auth::user();
     });
-    
+
     Route::get('/messages', function() {
         return App\Models\Message::with('user')->get();
     });
-    
+
     Route::post('/messages', function() {
        $user = Auth::user();
-    
+
       $message = new App\Models\Message();
       $message->message = request()->get('message', '');
       $message->user_id = $user->id;
       $message->save();
 
       broadcast(new App\Events\MessagePosted($message, $user))->toOthers();
-      
+
       return ['message' => $message->load('user')];
     });
 });

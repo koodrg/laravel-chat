@@ -18,11 +18,25 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 import Echo from 'laravel-echo';
-
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
 window.Echo = new Echo({
-    broadcaster: 'socket.io',
-    host: window.location.hostname + ':6001'
+    broadcaster: 'pusher',
+    key: 'app-key',
+    wsHost: '127.0.0.1',
+    wsPort: 6001,
+    wssPort: 6001,
+    forceTLS: false,
+    encrypted: true,
+    disableStats: true,
+    enabledTransports: ['ws', 'wss'],
+    // cluster:
 });
+
+// laravelEcho.private(`orders.${orderId}`)
+//     .listen('OrderShipmentStatusUpdated', (e) => {
+//         console.log(e.order);
+//     });
 
 // import Pusher from 'pusher-js';
 // window.Pusher = Pusher;
